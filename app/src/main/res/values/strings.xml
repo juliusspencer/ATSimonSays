@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Simon Says</string>
+
+	<!-- Display text -->
+	<string name="instructions">PRESS BUTTON A TO START</string>
+    <string name="game_intro">FOLLOW THE LIGHTS</string>
+    <string name="score">GAME OVER - SCORE - %1$d - LEVEL - %2$s</string>
+
+	<!-- Levels -->
+	<string name="good">GOOD</string>
+	<string name="neat">NEAT</string>
+	<string name="allg">ALLG</string>
+	<string name="awsm">AWSM</string>
+	<string name="gold">GOLD</string>
+	<string name="plat">PLAT</string>
+	<string name="pro">PRO</string>
+	<string name="mlg">MLG</string>
+	<string name="mstr">MSTR</string>
+	<string name="leet">1337</string>
+	<string name="peng">PENG</string>
+	<string name="boss">BOSS</string>
+	<string name="bot">BOT?</string>
+</resources>
