@@ -1,5 +1,4 @@
-#Simon Says game with Android Things and a RainbowHAT
-
+# Simon Says game with Android Things and a RainbowHAT
 
 This is a demo application which allows a user to play a Simon Says type of game. This is a non-production code example. Press A to re/start the game.
 
@@ -7,7 +6,7 @@ This is a demo application which allows a user to play a Simon Says type of game
 
 ![hardware](https://github.com/juliusspencer/ATSimonSays/blob/master/doc_resources/simon_says.jpg)
 
-##Pre-requisites
+## Pre-requisites
 
 - [Raspberry Pi Model 3 B](https://www.raspberrypi.org/products/raspberry-pi-3-model-b/)
 - [RainbowHAT](https://shop.pimoroni.com/products/rainbow-hat-for-android-things)
