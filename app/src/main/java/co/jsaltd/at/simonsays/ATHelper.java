@@ -6,6 +6,7 @@ import com.google.android.things.contrib.driver.apa102.Apa102;
 import com.google.android.things.contrib.driver.button.Button;
 import com.google.android.things.contrib.driver.ht16k33.AlphanumericDisplay;
 import com.google.android.things.contrib.driver.pwmspeaker.Speaker;
+import com.google.android.things.pio.Gpio;
 
 import java.io.IOException;
 
@@ -17,32 +18,22 @@ class ATHelper {
 
 	private static final String TAG = ATHelper.class.getName();
 
-	public static void releaseButtonA(Button button) {
+	public static void releaseButton(Button button) {
 		if (button != null) {
 			try {
 				button.close();
 			} catch (IOException e) {
-				Log.e(TAG, "Error closing button a", e);
+				Log.e(TAG, "Error closing button", e);
 			}
 		}
 	}
 
-	public static void releaseButtonB(Button button) {
-		if (button != null) {
+	public static void releaseLed(Gpio led) {
+		if(led != null) {
 			try {
-				button.close();
+				led.close();
 			} catch (IOException e) {
-				Log.e(TAG, "Error closing button b", e);
-			}
-		}
-	}
-
-	public static void releaseButtonC(Button button) {
-		if (button != null) {
-			try {
-				button.close();
-			} catch (IOException e) {
-				Log.e(TAG, "Error closing button c", e);
+				Log.e(TAG, "Error closing colorred LED", e);
 			}
 		}
 	}

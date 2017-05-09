@@ -25,7 +25,7 @@ public class MainActivity extends Activity {
 
 	private static final long TEXT_INCREMENT_DELAY_IN_MILLIS = 150; // how quickly to 'move' text
 	private static final long PLAYBACK_DELAY_IN_MILLIS = 500; // how quickly to switch between LEDs
-		private static final long NOTE_DURATION_IN_MILLIS = 150; // how long to play a sound on the buzzer
+	private static final long NOTE_DURATION_IN_MILLIS = 150; // how long to play a sound on the buzzer
 	private static final int DISPLAY_LENGTH = 4; // number of characters that can be displayed at once
 
 	// hardware
@@ -94,11 +94,14 @@ public class MainActivity extends Activity {
 	@Override protected void onDestroy() {
 		super.onDestroy();
 		Log.d(TAG, "onDestroy");
-		ATHelper.releaseButtonA(mButtonA);
-		ATHelper.releaseButtonB(mButtonB);
-		ATHelper.releaseButtonC(mButtonC);
+		ATHelper.releaseButton(mButtonA);
+		ATHelper.releaseButton(mButtonB);
+		ATHelper.releaseButton(mButtonC);
 		ATHelper.releaseDisplay(mDisplay);
 		ATHelper.releaseSpeaker(mSpeaker);
+		ATHelper.releaseLed(mRedLED);
+		ATHelper.releaseLed(mGreenLED);
+		ATHelper.releaseLed(mBlueLED);
 	}
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
