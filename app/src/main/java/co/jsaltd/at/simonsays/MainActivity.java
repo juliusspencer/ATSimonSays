@@ -109,7 +109,6 @@ public class MainActivity extends Activity {
 	 * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 	private void configureHardware() {
-		ATHelper.releaseDisplay(mDisplay);
 		// initialize display
 		try {
 			mDisplay = new AlphanumericDisplay(BoardDefaults.getI2cBus());
@@ -123,9 +122,9 @@ public class MainActivity extends Activity {
 
 		// configure the LEDs
 		try {
-			mRedLED = RainbowHat.openLed(RainbowHat.LED_RED);
-			mGreenLED = RainbowHat.openLed(RainbowHat.LED_GREEN);
-			mBlueLED = RainbowHat.openLed(RainbowHat.LED_BLUE);
+			mRedLED = RainbowHat.openLedRed();
+			mGreenLED = RainbowHat.openLedGreen();
+			mBlueLED = RainbowHat.openLedBlue();
 		} catch (IOException e) {
 			Log.e(TAG, "Error initializing leds", e);
 			return;
@@ -142,7 +141,7 @@ public class MainActivity extends Activity {
 
 		// initialize capacitive touch buttons
 		try {
-			mButtonA = RainbowHat.openButton(RainbowHat.BUTTON_A);
+			mButtonA = RainbowHat.openButtonA();
 			// Detect Button A press.
 			mButtonA.setOnButtonEventListener(new Button.OnButtonEventListener() {
 				@Override public void onButtonEvent(Button button, boolean pressed) {
@@ -156,7 +155,7 @@ public class MainActivity extends Activity {
 			e.printStackTrace();
 		}
 		try {
-			mButtonB = RainbowHat.openButton(RainbowHat.BUTTON_B);
+			mButtonB = RainbowHat.openButtonB();
 			// Detect Button B press.
 			mButtonB.setOnButtonEventListener(new Button.OnButtonEventListener() {
 				@Override public void onButtonEvent(Button button, boolean pressed) {
@@ -169,7 +168,7 @@ public class MainActivity extends Activity {
 			e.printStackTrace();
 		}
 		try {
-			mButtonC = RainbowHat.openButton(RainbowHat.BUTTON_C);
+			mButtonC = RainbowHat.openButtonC();
 			// Detect Button C press.
 			mButtonC.setOnButtonEventListener(new Button.OnButtonEventListener() {
 				@Override public void onButtonEvent(Button button, boolean pressed) {
@@ -293,34 +292,6 @@ public class MainActivity extends Activity {
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	 * leds
 	 * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-	/**
-	 * Turns an led on or off.
-	 */
-	private void updateLED(Gpio led, boolean value) {
-		try {
-			led.setValue(value);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Setup for turning an led on or off.
-	 */
-	class UpdateLEDRunnable  implements Runnable {
-
-		private final Gpio mLed;
-		private final boolean mValue;
-
-		UpdateLEDRunnable(Gpio led, boolean value) {
-			mLed = led;
-			mValue = value;
-		}
-
-		@Override public void run() {
-			updateLED(mLed, mValue);
-		}
-	}
 
 	/**
 	 * Plays the sequence by turning lights on and off.
@@ -336,7 +307,7 @@ public class MainActivity extends Activity {
 
 			// turn on the light
 			Gpio led = item == 2 ? mRedLED : item == 1 ? mGreenLED : mBlueLED;
-			updateLED(led, true);
+			UpdateLEDRunnable.updateLED(led, true);
 
 			// move to the next in the sequence
 			mCurrentSequencePlaybackIndex++;
@@ -504,7 +475,7 @@ public class MainActivity extends Activity {
 	 * @param duration the duration of playback
 	 */
 	private void playNote(double note, long duration) {
-		mHandler.post(new NotePlayer(note));
+		mHandler.post(new NotePlayer(note, mSpeaker));
 		mHandler.postDelayed(new Runnable() {
 			@Override public void run() {
 				try {
@@ -517,46 +488,23 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * Handles playing a note. If the frequency supplied is 0, stops playback.
-	 */
-	private class NotePlayer implements Runnable {
-
-		private final double mFrequency;
-
-		NotePlayer(double frequency) {
-			mFrequency = frequency;
-		}
-
-		@Override public void run() {
-			if (mSpeaker == null) return;
-
-			try {
-				mSpeaker.stop();
-				if(mFrequency != 0) mSpeaker.play(mFrequency);
-			} catch (IOException e) {
-				Log.e(TAG, "Error playing speaker", e);
-			}
-		}
-	}
-
-	/**
 	 * Play the intro music.
 	 */
 	private void playStart() {
-		mHandler.postDelayed(new NotePlayer(C5), NOTE_DURATION_IN_MILLIS * 3);
-		mHandler.postDelayed(new NotePlayer(D5), NOTE_DURATION_IN_MILLIS * 6);
-		mHandler.postDelayed(new NotePlayer(E5), NOTE_DURATION_IN_MILLIS * 9);
-		mHandler.postDelayed(new NotePlayer(0), NOTE_DURATION_IN_MILLIS * 12);
+		mHandler.postDelayed(new NotePlayer(C5, mSpeaker), NOTE_DURATION_IN_MILLIS * 3);
+		mHandler.postDelayed(new NotePlayer(D5, mSpeaker), NOTE_DURATION_IN_MILLIS * 6);
+		mHandler.postDelayed(new NotePlayer(E5, mSpeaker), NOTE_DURATION_IN_MILLIS * 9);
+		mHandler.postDelayed(new NotePlayer(0, mSpeaker), NOTE_DURATION_IN_MILLIS * 12);
 	}
 
 	/**
 	 * Plays the game over music.
 	 */
 	private void playEnd() {
-		mHandler.postDelayed(new NotePlayer(E5), NOTE_DURATION_IN_MILLIS * 3);
-		mHandler.postDelayed(new NotePlayer(C5), NOTE_DURATION_IN_MILLIS * 6);
-		mHandler.postDelayed(new NotePlayer(D5), NOTE_DURATION_IN_MILLIS * 9);
-		mHandler.postDelayed(new NotePlayer(0), NOTE_DURATION_IN_MILLIS * 12);
+		mHandler.postDelayed(new NotePlayer(E5, mSpeaker), NOTE_DURATION_IN_MILLIS * 3);
+		mHandler.postDelayed(new NotePlayer(C5, mSpeaker), NOTE_DURATION_IN_MILLIS * 6);
+		mHandler.postDelayed(new NotePlayer(D5, mSpeaker), NOTE_DURATION_IN_MILLIS * 9);
+		mHandler.postDelayed(new NotePlayer(0, mSpeaker), NOTE_DURATION_IN_MILLIS * 12);
 	}
 
 }
